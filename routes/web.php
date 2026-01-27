@@ -16,4 +16,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 });
 
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('dashboard', function () {
+        return Inertia::render('admin/dashboard');
+    })->name('admin.dashboard'); 
+
+Route::get('/articles', [App\Http\Controllers\ArticleController::class, 'index'])->name('admin.articles.index');
+Route::get('/articles/create', [App\Http\Controllers\ArticleController::class, 'create'])->name('admin.articles.create');
+});
+
+
 require __DIR__.'/settings.php';
