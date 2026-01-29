@@ -1,8 +1,6 @@
-import { PlusIcon } from 'lucide-react';
-
-import { columns, Payment } from '@/components/payments/column';
+import { columns} from '@/components/features/articles/column';
+import type { Payment } from '@/components/features/articles/types';
 import { DataTable } from '@/components/payments/data-table';
-import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 
@@ -17,21 +15,23 @@ export default function Articles() {
     const data: Payment[] = [
         {
             id: '728ed52f',
-            amount: 100,
-            status: 'pending',
-            email: 'm@example.com',
+            title: 'First Article',
+            content: 'This is the content of the first article.',
+            thumbnail: 'https://via.placeholder.com/150',
+            author: 'John Doe',
         },
     ];
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="p-10">
-                <a href="/admin/articles/create">
-                    <Button className=''>
-                    <PlusIcon />
-                    Create New Article</Button>
-                </a>
-                <DataTable columns={columns} data={data}/></div>
+                <div className='flex items-center justify-between'> </div>
+                <DataTable columns={columns} data={data}
+                filterColumns="email"
+                createhref='/admin/articles/create'
+                createlabel='New Article'
+                />
+                </div>
         </AppLayout>
     );
 }
