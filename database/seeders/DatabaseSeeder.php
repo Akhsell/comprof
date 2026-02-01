@@ -19,5 +19,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Article::factory(15)->create();
+        // Product::factory(15)->create();
+        // Client::factory(15)->create();
+        // Event::factory(15)->create();
+        // Gallery::factory(15)->create();
+
     }
 }

@@ -60,12 +60,12 @@ export function DataTable<TData, TValue>({
                             placeholder="Filter emails..."
                             value={
                               (table
-                                .getColumn('email')
+                                .getColumn('')
                                 ?.getFilterValue() as string) ?? ''
                               }
                               onChange={(event) =>
                                 table
-                                .getColumn('email')
+                                .getColumn('')
                                 ?.setFilterValue(event.target.value)
                               }
                               className="max-w-sm"

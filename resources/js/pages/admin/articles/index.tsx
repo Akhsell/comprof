@@ -1,8 +1,10 @@
-import { columns} from '@/components/features/articles/column';
-import type { Payment } from '@/components/features/articles/types';
+import { articlesColumns } from '@/components/features/articles/column';
+import type { Article } from '@/components/features/articles/types';
 import { DataTable } from '@/components/payments/data-table';
 import AppLayout from '@/layouts/app-layout';
+import type { SharedData } from '@/types';
 import { BreadcrumbItem } from '@/types';
+import { usePage } from '@inertiajs/react';
 
 export default function Articles() {
     const breadcrumbs: BreadcrumbItem[] = [
@@ -12,26 +14,24 @@ export default function Articles() {
         },
     ];
 
-    const data: Payment[] = [
-        {
-            id: '728ed52f',
-            title: 'First Article',
-            content: 'This is the content of the first article.',
-            thumbnail: 'https://via.placeholder.com/150',
-            author: 'John Doe',
-        },
-    ];
-
+    const { auth, articles } = usePage<SharedData>().props;
+    const user = auth.user;
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="p-10">
-                <div className='flex items-center justify-between'> </div>
-                <DataTable columns={columns} data={data}
-                filterColumns="email"
-                createhref='/admin/articles/create'
-                createlabel='New Article'
-                />
+                <div className="flex w-full justify-between">
+                    <p className="text-3xl font-bold">Articles</p>
+                    <p className="font-black">Hi, {user.name}</p>
                 </div>
+                <div className="flex items-center justify-between"> </div>
+                <DataTable
+                    columns={articlesColumns}
+                    data={articles as Article[]}
+                    filterColumns="email"
+                    createhref="/admin/articles/create"
+                    createlabel="New Article"
+                />
+            </div>
         </AppLayout>
     );
 }

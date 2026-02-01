@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Article;
+use Illuminate\Support\Str;
 
 class ArticleController extends Controller
 {
@@ -12,7 +14,10 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        return Inertia::render('admin/articles/index');
+        $articles = Article::latest()->get();
+        return Inertia::render('admin/articles/index', [
+            'articles' => $articles,
+        ]);
     }
 
     /**
@@ -28,7 +33,22 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'content' => 'required|string',
+            'thumbnail' => 'nullable|image|max:2048|mimes:png,jpg',
+            'author' => 'required|string|max:255',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('thumbnails', 'public');
+            $validated['thumbnail'] = $path;
+        }
+
+        $validated['slug'] = Str::slug($validated['title'], '-');
+
+        Article::create($validated);
+        return redirect()->route('admin.articles.index')->with('Success', 'Article created successfully.');
     }
 
     /**
@@ -44,7 +64,11 @@ class ArticleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $article = Article::findOrFail($id);
+
+        return Inertia::render('admin/articles/edit', [
+            'article' => $article,
+        ]);
     }
 
     /**
@@ -52,7 +76,27 @@ class ArticleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $article = Article::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:200',
+            'content' => 'required|string',
+            'thumbnail' => 'nullable|image|max:2048|mimes:png,jpg',
+            'author' => 'required|string|max:100',
+        ]);
+
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('thumbnails', 'public');
+            $validated['thumbnail'] = $path;
+        } else {
+            $validated['thumbnail'] = $article->thumbnail;
+        }
+
+        $validated['slug'] = Str::slug($validated['title'], '-');
+
+        $article->update($validated);
+        // dd($article);
+        return redirect()->route('admin.articles.index')->with('Success', 'Article updated successfully.');
     }
 
     /**
@@ -60,6 +104,8 @@ class ArticleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $articles = Article::findOrFail($id);
+        $articles->delete();
+        return redirect()->route('admin.articles.index')->with('Success', 'Article deleted successfully');
     }
 }

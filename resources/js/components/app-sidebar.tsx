@@ -31,7 +31,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Products',
-        href: dashboard(),
+        href: '/admin/products',
         icon: LayoutGrid,
     },
     {
