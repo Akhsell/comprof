@@ -68,7 +68,7 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         return Inertia::render('admin/products/edit', [
-            'products' => $product,
+            'product' => $product,
         ]);
     }
 

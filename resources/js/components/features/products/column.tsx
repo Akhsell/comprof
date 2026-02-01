@@ -44,7 +44,7 @@ export const productsColumns: ColumnDef<Product>[] = [
         cell: ({ row }) => {
             return (
                 <div className="flex items-center gap-2">
-                    <Link>
+                    <Link href={`/admin/products/${row.original.id}`}>
                         <PencilIcon className="text-blue-600" size={18} />
                     </Link>
                     <Link
