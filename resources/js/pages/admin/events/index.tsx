@@ -1,0 +1,37 @@
+import { eventsColumns } from '@/components/features/events/column';
+import type { Event } from '@/components/features/events/types';
+import { DataTable } from '@/components/payments/data-table';
+import AppLayout from '@/layouts/app-layout';
+import type { SharedData } from '@/types';
+import { BreadcrumbItem } from '@/types';
+import { usePage } from '@inertiajs/react';
+
+export default function Events() {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+        },
+    ];
+
+    const { auth, events } = usePage<SharedData>().props;
+    const user = auth.user;
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <div className="p-10">
+                <div className="flex w-full justify-between">
+                    <p className="text-3xl font-bold">Events</p>
+                    <p className="font-black">Hi, {user.name}</p>
+                </div>
+                <div className="flex items-center justify-between"> </div>
+                <DataTable
+                    columns={eventsColumns}
+                    data={events as Event[]}
+                    filterColumns="email"
+                    createhref="/admin/events/create"
+                    createlabel="New Event"
+                />
+            </div>
+        </AppLayout>
+    );
+}
