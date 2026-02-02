@@ -17,10 +17,10 @@ class DashboardController extends Controller
         
         return Inertia::render('dashboard', [
             'productsCount' => Product::latest()-> get(),
-            'articlesCount' => Article::count(),
-            'eventsCount' => Event::count(),
-            'clientsCount' => Client::count(),
-            'galleriesCount' => Gallery::count(),
+            'articlesCount' => Article::latest()-> get(),
+            'eventsCount' => Event::latest()-> get(),
+            'clientsCount' => Client::latest()-> get(),
+            'galleriesCount' => Gallery::latest()-> get(),
         ]);
     }
 }

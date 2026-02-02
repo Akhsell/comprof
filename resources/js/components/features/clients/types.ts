@@ -4,6 +4,4 @@ export type Client = {
     logo: string | null;
     website: string | null;
     description: string | null;
-    order: number | null;
-    is_active: boolean;
 }

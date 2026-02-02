@@ -45,7 +45,7 @@ class EventController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('events', 'public');
+            $path = $request->file('image')->store('image', 'public');
             $validated['image'] = $path;
         }
 
@@ -91,7 +91,7 @@ class EventController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
+            $path = $request->file('image')->store('image', 'public');
             $validated['image'] = $path;
         }
 

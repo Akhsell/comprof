@@ -14,16 +14,21 @@ export const clientsColumns: ColumnDef<Client>[] = [
         header: 'Name',
     },
     {
+        accessorKey: 'logo',
+        header: 'Logo',
+        cell: ({ row }) => {
+            const images = row.original.logo;
+            const url = images ? `/storage/${images}` : 'noimage.png';
+            return <img className="h-10 w-10 object-cover" src={url} alt="" />;
+        },
+    },
+    {
+        accessorKey: 'website',
+        header: 'Website',
+    },
+    {
         accessorKey: 'description',
         header: 'Description',
-    },
-    {
-        accessorKey: 'content',
-        header: 'Content',
-    },
-    {
-        accessorKey: 'location',
-        header: 'Location',
     },
     {
         accessorKey: 'action',

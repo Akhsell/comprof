@@ -1,0 +1,37 @@
+import { clientsColumns } from '@/components/features/clients/column';
+import { Client } from '@/components/features/clients/types';
+import { DataTable } from '@/components/payments/data-table';
+import AppLayout from '@/layouts/app-layout';
+import type { SharedData } from '@/types';
+import { BreadcrumbItem } from '@/types';
+import { usePage } from '@inertiajs/react';
+
+export default function Clients() {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+        },
+    ];
+
+    const { auth, clients } = usePage<SharedData>().props;
+    const user = auth.user;
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <div className="p-10">
+                <div className="flex w-full justify-between">
+                    <p className="text-3xl font-bold">Clients</p>
+                    <p className="font-black">Hi, {user.name}</p>
+                </div>
+                <div className="flex items-center justify-between"> </div>
+                <DataTable
+                    columns={clientsColumns}
+                    data={clients as Client[]}
+                    filterColumns="email"
+                    createhref="/admin/clients/create"
+                    createlabel="New Client"
+                />
+            </div>
+        </AppLayout>
+    );
+}

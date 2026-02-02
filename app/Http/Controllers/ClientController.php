@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use App\Models\Client;
+use Illuminate\Support\Str;
 
 class ClientController extends Controller
 {
@@ -11,7 +14,10 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        $clients = Client::latest()->get();
+        return inertia('admin/clients/index', [
+            'clients' => $clients,
+        ]);
     }
 
     /**
@@ -19,7 +25,7 @@ class ClientController extends Controller
      */
     public function create()
     {
-        //
+        return inertia('admin/clients/create');
     }
 
     /**
@@ -27,7 +33,22 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'logo' => 'nullable|image|max:2048|mimes:jpg,png',
+            'website' => '',
+            'description' => 'nullable|string',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('clients', 'public');
+            $validated['logo'] = $path;
+        }
+
+        $validated['slug'] = Str::slug($validated['name'], '-');
+
+        Client::create($validated);
+        return redirect()->route('admin.clients.index')->with('Success', 'Client created successfully.');
     }
 
     /**
@@ -43,7 +64,10 @@ class ClientController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $client = Client::findOrFail($id);
+        return Inertia::render('admin/clients/edit', [
+            'client' => $client,
+        ]);
     }
 
     /**
@@ -51,7 +75,23 @@ class ClientController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'logo' => 'nullable|image|max:2048|mimes:jpg,png',
+            'website' => '',
+            'description' => 'nullable|string',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            $path = $request->file('logo')->store('clients', 'public');
+            $validated['logo'] = $path;
+        }
+
+        $validated['slug'] = Str::slug($validated['name'], '-');
+
+        $client = Client::findOrFail($id);
+        $client->update($validated);
+        return redirect()->route('admin.clients.index')->with('Success', 'Client updated successfully.');
     }
 
     /**
@@ -59,6 +99,8 @@ class ClientController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $client = Client::findOrFail($id);
+        $client->delete();
+        return redirect()->route('admin.clients.index')->with('Success', 'Client deleted successfully');
     }
 }

@@ -13,7 +13,5 @@ class Client extends Model
         'logo',
         'website',
         'description',
-        'order',
-        'is_active',
     ];
 }
