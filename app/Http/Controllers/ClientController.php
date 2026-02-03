@@ -36,7 +36,7 @@ class ClientController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'logo' => 'nullable|image|max:2048|mimes:jpg,png',
-            'website' => '',
+            'website' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 
@@ -66,7 +66,14 @@ class ClientController extends Controller
     {
         $client = Client::findOrFail($id);
         return Inertia::render('admin/clients/edit', [
-            'client' => $client,
+            'client' => [
+                'id' => $client->id,
+                'name' => $client->name,
+                'website' => $client->website,
+                'description' => $client->description,
+                'logo' => $client->logo
+                ?  asset('storage/' . $client->logo): null,
+            ]
         ]);
     }
 
@@ -78,7 +85,7 @@ class ClientController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'logo' => 'nullable|image|max:2048|mimes:jpg,png',
-            'website' => '',
+            'website' => 'nullable|string',
             'description' => 'nullable|string',
         ]);
 

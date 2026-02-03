@@ -7,12 +7,7 @@ import { BreadcrumbItem } from '@/types';
 import { usePage } from '@inertiajs/react';
 
 export default function Clients() {
-    const breadcrumbs: BreadcrumbItem[] = [
-        {
-            title: 'Dashboard',
-            href: '/dashboard',
-        },
-    ];
+    const breadcrumbs: BreadcrumbItem[] = [];
 
     const { auth, clients } = usePage<SharedData>().props;
     const user = auth.user;

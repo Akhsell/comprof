@@ -70,7 +70,18 @@ class EventController extends Controller
     {
         $event = Event::findOrFail($id);
         return Inertia::render('admin/events/edit', [
-            'event' => $event,
+            'event' => [
+                'id' => $event->id,
+                'title' => $event->title,
+                'description' => $event->description,
+                'content' => $event->content,
+                'location' => $event->location,
+                'start_date' => $event->start_date,
+                'end_date' => $event->end_date,
+                'is_active' => $event->is_active,
+                'image' => $event->image
+                ?  asset('storage/' . $event->image): null,
+            ]
         ]);
     }
 

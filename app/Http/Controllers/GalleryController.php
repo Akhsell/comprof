@@ -64,7 +64,12 @@ class GalleryController extends Controller
     {
         $gallery = Gallery::findOrFail($id);
         return Inertia::render('admin/galleries/edit', [
-            'gallery' => $gallery,
+            'gallery' => [
+                'id' => $gallery->id,
+                'title' => $gallery->title,
+                'image' => $gallery->image
+                ?  asset('storage/' . $gallery->image): null,
+            ]
         ]);
     }
 

@@ -68,7 +68,16 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
         return Inertia::render('admin/products/edit', [
-            'product' => $product,
+            'product' => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'description' => $product->description,
+                'content' => $product->content,
+                'price' => $product->price,
+                'order' => $product->order,
+                'image' => $product->image 
+                ?  asset('storage/' . $product->image): null,
+            ]
         ]);
     }
 

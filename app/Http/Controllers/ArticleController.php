@@ -67,7 +67,15 @@ class ArticleController extends Controller
         $article = Article::findOrFail($id);
 
         return Inertia::render('admin/articles/edit', [
-            'article' => $article,
+            'article' => [
+                'id' => $article->id,
+                'title' => $article->title,
+                'author' => $article->author,
+                'content' => $article->content,
+                'thumbnail' => $article->thumbnail
+                    ? asset('storage/' . $article->thumbnail)
+                    : null,
+            ]
         ]);
     }
 
