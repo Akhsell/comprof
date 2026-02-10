@@ -19,4 +19,9 @@ class Event extends Model
         'end_date',
         'is_active',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

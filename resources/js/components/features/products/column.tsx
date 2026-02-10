@@ -22,9 +22,19 @@ export const productsColumns: ColumnDef<Product>[] = [
         header: 'Content',
     },
     {
-        accessorKey: 'price',
-        header: 'Price',
+    accessorKey: 'price',
+    header: 'Price',
+    cell: ({ row }) => {
+        const price = row.original.price;
+        // Format ke Rupiah dengan pemisah ribuan (titik)
+        const formattedPrice = new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+        }).format(price);
+        return <span>{formattedPrice}</span>;
     },
+},
     {
         accessorKey: 'image',
         header: 'Image',

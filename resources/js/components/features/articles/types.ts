@@ -4,4 +4,5 @@ export type Article = {
   content: string
   thumbnail: string
   author: string
+  slug: string
 }

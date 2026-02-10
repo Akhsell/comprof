@@ -14,4 +14,9 @@ class Client extends Model
         'website',
         'description',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

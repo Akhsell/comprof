@@ -15,4 +15,9 @@ class Article extends Model
         'author',
         'slug',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

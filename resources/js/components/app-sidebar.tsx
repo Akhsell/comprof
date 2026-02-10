@@ -25,14 +25,14 @@ const mainNavItems: NavItem[] = [
         icon: Home,
     },
     {
-        title: 'Articles',
-        href: '/admin/articles',
-        icon: BookOpenText,
-    },
-    {
         title: 'Products',
         href: '/admin/products',
         icon: BoxIcon,
+    },
+    {
+        title: 'Articles',
+        href: '/admin/articles',
+        icon: BookOpenText,
     },
     {
         title: 'Events',

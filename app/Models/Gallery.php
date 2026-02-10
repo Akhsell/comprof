@@ -12,4 +12,9 @@ class Gallery extends Model
         'title',
         'image',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

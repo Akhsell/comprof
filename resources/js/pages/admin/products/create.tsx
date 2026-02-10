@@ -18,6 +18,7 @@ export default function ProductCreate() {
     });
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [formattedPrice, setFormattedPrice] = useState('');
 
     const breadcrumbs: BreadcrumbItem[] = [];
 
@@ -26,11 +27,22 @@ export default function ProductCreate() {
         post('/admin/products');
     };
 
+    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/\D/g, '');
+        setData('price', value);
+        
+        if (value) {
+            const formatted = parseInt(value).toLocaleString('id-ID');
+            setFormattedPrice(formatted);
+        } else {
+            setFormattedPrice('');
+        }
+    };
+
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null;
         setData('image', file);
 
-        // Generate preview
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -45,7 +57,6 @@ export default function ProductCreate() {
     const removeImage = () => {
         setData('image', null);
         setImagePreview(null);
-        // Reset file input
         const fileInput = document.getElementById('image') as HTMLInputElement;
         if (fileInput) fileInput.value = '';
     };
@@ -53,7 +64,6 @@ export default function ProductCreate() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="p-8">
-                {/* Header */}
                 <div className="mb-8">
                     <h1 className="mb-2 text-3xl font-bold text-gray-900">
                         Create New Product
@@ -64,11 +74,8 @@ export default function ProductCreate() {
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    {/* Grid Layout */}
                     <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
-                        {/* Left Column */}
                         <div className="space-y-6">
-                            {/* Name Field */}
                             <Field>
                                 <FieldLabel htmlFor="name">
                                     Product Name{' '}
@@ -97,7 +104,6 @@ export default function ProductCreate() {
                                 </FieldDescription>
                             </Field>
 
-                            {/* Description Field */}
                             <Field>
                                 <FieldLabel htmlFor="description">
                                     Description{' '}
@@ -128,7 +134,6 @@ export default function ProductCreate() {
                                 </FieldDescription>
                             </Field>
 
-                            {/* Content Field */}
                             <Field>
                                 <FieldLabel htmlFor="content">
                                     Content{' '}
@@ -158,29 +163,27 @@ export default function ProductCreate() {
                             </Field>
                         </div>
 
-                        {/* Right Column */}
                         <div className="space-y-6">
-                            {/* Price & Order in Grid */}
                             <div className="grid grid-cols-2 gap-4">
-                                {/* Price Field */}
                                 <Field>
                                     <FieldLabel htmlFor="price">
                                         Price{' '}
                                         <span className="text-red-500">*</span>
                                     </FieldLabel>
-                                    <Input
-                                        id="price"
-                                        type="number"
-                                        placeholder="0"
-                                        value={data.price}
-                                        onChange={(e) =>
-                                            setData('price', e.target.value)
-                                        }
-                                        className={
-                                            errors.price ? 'border-red-500' : ''
-                                        }
-                                        disabled={processing}
-                                    />
+                                    <div className="relative">
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
+                                            Rp
+                                        </span>
+                                        <Input
+                                            id="price"
+                                            type="text"
+                                            placeholder="0"
+                                            value={formattedPrice}
+                                            onChange={handlePriceChange}
+                                            className={`pl-10 ${errors.price ? 'border-red-500' : ''}`}
+                                            disabled={processing}
+                                        />
+                                    </div>
                                     {errors.price && (
                                         <FieldDescription className="text-red-600">
                                             {errors.price}
@@ -188,7 +191,6 @@ export default function ProductCreate() {
                                     )}
                                 </Field>
 
-                                {/* Order Field */}
                                 <Field>
                                     <FieldLabel htmlFor="order">
                                         Display Order
@@ -214,7 +216,6 @@ export default function ProductCreate() {
                                 </Field>
                             </div>
 
-                            {/* Product Image Field */}
                             <Field>
                                 <FieldLabel htmlFor="image">
                                     Product Image
@@ -251,7 +252,6 @@ export default function ProductCreate() {
                                     </FieldDescription>
                                 )}
 
-                                {/* Image Preview - Contained */}
                                 {imagePreview && (
                                     <div className="mt-4">
                                         <p className="mb-2 text-sm font-medium text-gray-700">
@@ -270,7 +270,6 @@ export default function ProductCreate() {
                         </div>
                     </div>
 
-                    {/* Action Buttons */}
                     <div className="grid max-w-md grid-cols-2 gap-4">
                         <Button
                             type="button"

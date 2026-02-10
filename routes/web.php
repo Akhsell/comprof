@@ -6,15 +6,24 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
-Route::get('/', function () {
-    return Inertia::render('welcome', [
-        'canRegister' => Features::enabled(Features::registration()),
-    ]);
-})->name('home');
+Route::get('/', [UserController::class, 'index'])->name('home');
+
+Route::get('/product/view-product', [UserController::class, 'viewProduct'])->name('viewProduct');
+Route::get('/article/view-article', [UserController::class, 'viewArticle'])->name('viewArticle');
+Route::get('/event/view-event', [UserController::class, 'viewEvent'])->name('viewEvent');
+Route::get('/client/view-client', [UserController::class, 'viewClient'])->name('viewClient');
+Route::get('/gallery/view-gallery', [UserController::class, 'viewGallery'])->name('viewGallery');
+
+Route::get('/product/detail-product/{product}', [UserController::class, 'detailProduct'])->name('detailProduct');
+Route::get('/article/detail-article/{article}', [UserController::class, 'detailArticle'])->name('detailArticle');
+
+Route::get('/product/checkout/{product}', [UserController::class, 'checkout'])->name('checkout');
+
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
