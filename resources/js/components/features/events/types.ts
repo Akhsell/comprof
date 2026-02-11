@@ -1,4 +1,5 @@
-export type Event = { 
+export type Event = {
+    created_at: import("react/jsx-runtime").JSX.Element; 
     id: number;
     title: string;
     description: string;

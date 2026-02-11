@@ -1,6 +1,6 @@
 import { SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Clock, User, Tag, Share2 } from 'lucide-react';
+import { ArrowLeft, Calendar, User } from 'lucide-react';
 
 interface Article {
     id: number;
@@ -39,7 +39,7 @@ export default function articleDetail() {
         return date.toLocaleDateString('id-ID', {
             year: 'numeric',
             month: 'long',
-            day: 'numeric'
+            day: 'numeric',
         });
     };
 
@@ -186,7 +186,7 @@ export default function articleDetail() {
                                 <h1 className="mb-4 text-[clamp(2rem,4vw,3rem)] leading-tight font-semibold tracking-tight text-balance">
                                     {article.title}
                                 </h1>
-                                
+
                                 {/* Article Meta */}
                                 <div className="flex flex-wrap items-center gap-4 text-sm text-black/60 dark:text-white/60">
                                     <div className="flex items-center gap-2">
@@ -196,7 +196,9 @@ export default function articleDetail() {
                                     {article.created_at && (
                                         <div className="flex items-center gap-2">
                                             <Calendar className="h-4 w-4" />
-                                            <span>{formatDate(article.created_at)}</span>
+                                            <span>
+                                                {formatDate(article.created_at)}
+                                            </span>
                                         </div>
                                     )}
                                 </div>
@@ -216,26 +218,12 @@ export default function articleDetail() {
                             {/* Article Content */}
                             <div className="article-content space-y-6">
                                 {/* Main Content */}
-                                <div 
+                                <div
                                     className="text-base leading-relaxed font-light text-black/70 dark:text-white/70"
-                                    dangerouslySetInnerHTML={{ __html: article.content }}
+                                    dangerouslySetInnerHTML={{
+                                        __html: article.content,
+                                    }}
                                 />
-                            </div>
-
-                            {/* Share & Actions */}
-                            <div className="mt-12 border-t border-black/10 pt-8 dark:border-white/10">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <h3 className="mb-2 text-sm font-semibold uppercase tracking-wider text-black/60 dark:text-white/60">
-                                            Share Article
-                                        </h3>
-                                        <div className="flex gap-3">
-                                            <button className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 transition-colors hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5">
-                                                <Share2 className="h-4 w-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
@@ -244,7 +232,7 @@ export default function articleDetail() {
                             <div className="sticky top-24 space-y-6">
                                 {/* Author Card */}
                                 <div className="rounded-2xl border border-black/10 p-6 dark:border-white/10">
-                                    <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-black/60 dark:text-white/60">
+                                    <h3 className="mb-4 text-sm font-semibold tracking-wider text-black/60 uppercase dark:text-white/60">
                                         About Author
                                     </h3>
                                     <div className="flex items-center gap-3">
@@ -252,7 +240,9 @@ export default function articleDetail() {
                                             <User className="h-6 w-6" />
                                         </div>
                                         <div>
-                                            <p className="font-medium">{article.author}</p>
+                                            <p className="font-medium">
+                                                {article.author}
+                                            </p>
                                             <p className="text-sm text-black/60 dark:text-white/60">
                                                 Content Writer
                                             </p>
@@ -262,33 +252,23 @@ export default function articleDetail() {
 
                                 {/* Article Info */}
                                 <div className="rounded-2xl border border-black/10 p-6 dark:border-white/10">
-                                    <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-black/60 dark:text-white/60">
+                                    <h3 className="mb-4 text-sm font-semibold tracking-wider text-black/60 uppercase dark:text-white/60">
                                         Article Info
                                     </h3>
                                     <div className="space-y-3 text-sm">
                                         {article.created_at && (
                                             <div className="flex justify-between">
-                                                <span className="text-black/60 dark:text-white/60">Published</span>
-                                                <span className="font-medium">{formatDate(article.created_at)}</span>
+                                                <span className="text-black/60 dark:text-white/60">
+                                                    Published
+                                                </span>
+                                                <span className="font-medium">
+                                                    {formatDate(
+                                                        article.created_at,
+                                                    )}
+                                                </span>
                                             </div>
                                         )}
                                     </div>
-                                </div>
-
-                                {/* CTA Card */}
-                                <div className="rounded-2xl border border-black/10 bg-black/[0.02] p-6 dark:border-white/10 dark:bg-white/[0.02]">
-                                    <h3 className="mb-2 text-lg font-semibold">
-                                        Like this article?
-                                    </h3>
-                                    <p className="mb-4 text-sm font-light text-black/70 dark:text-white/70">
-                                        Get more insights and updates delivered to your inbox.
-                                    </p>
-                                    <Link
-                                        href="/#contact"
-                                        className="flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition-all hover:gap-3 dark:bg-white dark:text-black"
-                                    >
-                                        Subscribe Now
-                                    </Link>
                                 </div>
                             </div>
                         </div>
@@ -321,23 +301,31 @@ export default function articleDetail() {
                                                 <div className="mb-4 aspect-video overflow-hidden rounded-lg bg-black/5 dark:bg-white/5">
                                                     <img
                                                         src={`/storage/${relatedArticle.thumbnail}`}
-                                                        alt={relatedArticle.title}
+                                                        alt={
+                                                            relatedArticle.title
+                                                        }
                                                         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                                                     />
                                                 </div>
                                             )}
                                             <div className="space-y-2">
-                                                <h3 className="text-lg font-medium tracking-tight line-clamp-2">
+                                                <h3 className="line-clamp-2 text-lg font-medium tracking-tight">
                                                     {relatedArticle.title}
                                                 </h3>
                                                 <div className="flex items-center gap-2 text-xs text-black/60 dark:text-white/60">
                                                     <User className="h-3 w-3" />
-                                                    <span>{relatedArticle.author}</span>
+                                                    <span>
+                                                        {relatedArticle.author}
+                                                    </span>
                                                 </div>
                                                 {relatedArticle.created_at && (
                                                     <div className="flex items-center gap-2 text-xs text-black/50 dark:text-white/50">
                                                         <Calendar className="h-3 w-3" />
-                                                        <span>{formatDate(relatedArticle.created_at)}</span>
+                                                        <span>
+                                                            {formatDate(
+                                                                relatedArticle.created_at,
+                                                            )}
+                                                        </span>
                                                     </div>
                                                 )}
                                             </div>

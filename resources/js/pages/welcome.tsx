@@ -15,6 +15,7 @@ import {
     MapPin,
     Phone,
     X,
+    Menu,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -35,7 +36,7 @@ export default function Welcome({
     const { products, articles, events, clients, galleries } =
         usePage<welcomeProps>().props;
     const [scrolled, setScrolled] = useState(false);
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [activeSection, setActiveSection] = useState<string | null>(null);
     const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
 
@@ -55,7 +56,7 @@ export default function Welcome({
     }, []);
 
     useEffect(() => {
-        if (isMenuOpen) {
+        if (isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = 'unset';
@@ -63,19 +64,16 @@ export default function Welcome({
         return () => {
             document.body.style.overflow = 'unset';
         };
-    }, [isMenuOpen]);
-
-    const menuSections = [
-        { title: 'About Us', href: '#about' },
-        { title: 'Contact Us', href: '#contact' },
-    ];
+    }, [isMobileMenuOpen]);
 
     const mainMenuItems = [
-        { label: 'Products', href: '/product/view-product', featured: true },
+        { label: 'About', href: '#about' },
+        { label: 'Products', href: '/product/view-product' },
         { label: 'Articles', href: '/article/view-article' },
         { label: 'Events', href: '/event/view-event' },
         { label: 'Clients', href: '/client/view-client' },
         { label: 'Gallery', href: '/gallery/view-gallery' },
+        { label: 'Contact', href: '#contact' },
     ];
 
     return (
@@ -107,6 +105,17 @@ export default function Welcome({
           to { transform: rotate(360deg); }
         }
 
+        @keyframes slideInFromRight {
+          from { 
+            opacity: 0;
+            transform: translateX(20px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
         .animate-fade-in-up {
           animation: fadeInUp 0.8s ease-out forwards;
         }
@@ -119,11 +128,17 @@ export default function Welcome({
           animation: spin 0.8s linear infinite;
         }
 
+        .animate-slide-in {
+          animation: slideInFromRight 0.4s ease-out forwards;
+        }
+
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
         .delay-300 { animation-delay: 0.3s; }
         .delay-400 { animation-delay: 0.4s; }
         .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-700 { animation-delay: 0.7s; }
 
         .image-reveal {
           overflow: hidden;
@@ -299,6 +314,7 @@ export default function Welcome({
                 >
                     <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
                         <nav className="flex h-16 items-center justify-between">
+                            {/* Logo */}
                             <Link href="/" className="flex items-center">
                                 <img
                                     src="/image/VerveLab6.png"
@@ -307,7 +323,32 @@ export default function Welcome({
                                 />
                             </Link>
 
-                            <div className="flex items-center gap-8">
+                            {/* Desktop Menu */}
+                            <div className="hidden items-center gap-2 lg:flex">
+                                {mainMenuItems.map((item) => (
+                                    <a
+                                        key={item.href}
+                                        href={item.href}
+                                        onClick={(e) => {
+                                            if (item.href.startsWith('#')) {
+                                                e.preventDefault();
+                                                const element = document.querySelector(item.href);
+                                                element?.scrollIntoView({
+                                                    behavior: 'smooth',
+                                                    block: 'start',
+                                                });
+                                            }
+                                        }}
+                                        className="group relative px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-black dark:hover:text-white"
+                                    >
+                                        <span className="relative z-10">{item.label}</span>
+                                        <span className="absolute inset-0 rounded-lg bg-black/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-white/5"></span>
+                                    </a>
+                                ))}
+                            </div>
+
+                            {/* Right Side - Auth & Mobile Menu */}
+                            <div className="flex items-center gap-4">
                                 {!auth.user && (
                                     <Link
                                         href={login()}
@@ -326,96 +367,98 @@ export default function Welcome({
                                     </Link>
                                 )}
 
+                                {/* Mobile Menu Button */}
                                 <button
-                                    onClick={() => setIsMenuOpen(true)}
-                                    className="group hidden cursor-pointer items-center gap-3 rounded-full border border-black/10 px-4 py-2 text-sm font-medium transition-all hover:border-black/20 hover:bg-black/5 md:inline-flex dark:border-white/10 dark:hover:border-white/20 dark:hover:bg-white/5"
+                                    onClick={() => setIsMobileMenuOpen(true)}
+                                    className="group flex items-center justify-center gap-2 rounded-xl border border-black/10 bg-white px-4 py-2.5 text-sm font-medium shadow-sm transition-all hover:border-black/20 hover:bg-black/5 hover:shadow-md active:scale-95 lg:hidden dark:border-white/10 dark:bg-black dark:hover:border-white/20 dark:hover:bg-white/5"
+                                    aria-label="Open menu"
                                 >
-                                    <span className="transition-opacity group-hover:opacity-70">
-                                        Menu
-                                    </span>
-                                    <div className="flex flex-col gap-1">
-                                        <span className="h-[2px] w-4 bg-current transition-all duration-300 group-hover:w-5"></span>
-                                        <span className="h-[2px] w-3 bg-current transition-all duration-300 group-hover:w-5"></span>
-                                    </div>
+                                    <Menu className="h-4 w-4 transition-transform group-hover:scale-110" />
+                                    <span className="hidden sm:inline">Menu</span>
                                 </button>
                             </div>
                         </nav>
                     </div>
                 </header>
 
-                {/* Menu Overlay */}
+                {/* Mobile Menu Overlay */}
                 <div
-                    className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-md transition-opacity duration-500 ${
-                        isMenuOpen
+                    className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-md transition-opacity duration-300 lg:hidden ${
+                        isMobileMenuOpen
                             ? 'opacity-100'
                             : 'pointer-events-none opacity-0'
                     }`}
-                    onClick={() => setIsMenuOpen(false)}
+                    onClick={() => setIsMobileMenuOpen(false)}
                 />
 
-                {/* Menu Panel */}
+                {/* Mobile Menu Panel */}
                 <div
-                    className={`fixed top-0 right-0 z-[60] h-full w-full max-w-xl transform bg-white transition-transform duration-500 ease-out dark:bg-black ${
-                        isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+                    className={`fixed top-0 right-0 z-[60] h-full w-full max-w-md transform bg-white shadow-2xl transition-transform duration-500 ease-out lg:hidden dark:bg-black ${
+                        isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
                     }`}
                 >
                     <div className="flex h-full flex-col">
-                        <div className="flex items-center justify-between border-b border-black/10 px-8 py-6 dark:border-white/10">
-                            <span className="text-xs font-medium tracking-wide uppercase opacity-50">
-                                Navigation
-                            </span>
+                        {/* Header */}
+                        <div className="flex items-center justify-between border-b border-black/10 px-6 py-5 backdrop-blur-xl dark:border-white/10">
+                            <div className="flex items-center gap-3">
+                                <img
+                                    src="/image/VerveLab6.png"
+                                    alt="VerveLab"
+                                    className="h-7 w-auto object-contain"
+                                />
+                            </div>
                             <button
-                                onClick={() => setIsMenuOpen(false)}
-                                className="rounded-full p-2 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="group rounded-xl p-2.5 transition-all hover:bg-black/5 active:scale-90 dark:hover:bg-white/5"
+                                aria-label="Close menu"
                             >
-                                <X className="h-5 w-5" />
+                                <X className="h-5 w-5 transition-transform group-hover:rotate-90" />
                             </button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto px-8 py-12">
-                            <nav className="space-y-1">
+                        {/* Menu Items */}
+                        <div className="flex-1 overflow-y-auto px-6 py-8">
+                            <nav className="space-y-2">
                                 {mainMenuItems.map((item, index) => (
                                     <a
                                         key={item.href}
                                         href={item.href}
-                                        className="group flex items-center justify-between rounded-xl px-4 py-4 transition-all hover:bg-black/5 dark:hover:bg-white/5"
-                                        onClick={() => setIsMenuOpen(false)}
+                                        className={`group flex items-center justify-between rounded-xl px-5 py-4 transition-all hover:bg-black/5 active:scale-[0.98] dark:hover:bg-white/5 ${
+                                            isMobileMenuOpen ? 'animate-slide-in opacity-0' : ''
+                                        }`}
+                                        style={{ animationDelay: `${index * 50}ms` }}
+                                        onClick={(e) => {
+                                            if (item.href.startsWith('#')) {
+                                                e.preventDefault();
+                                                setIsMobileMenuOpen(false);
+                                                setTimeout(() => {
+                                                    const element = document.querySelector(item.href);
+                                                    element?.scrollIntoView({
+                                                        behavior: 'smooth',
+                                                        block: 'start',
+                                                    });
+                                                }, 300);
+                                            } else {
+                                                setIsMobileMenuOpen(false);
+                                            }
+                                        }}
                                     >
-                                        <span className="text-2xl font-light tracking-tight">
+                                        <span className="text-lg font-medium tracking-tight transition-colors group-hover:text-black dark:group-hover:text-white">
                                             {item.label}
                                         </span>
-                                        <ArrowUpRight className="h-5 w-5 opacity-0 transition-all group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:opacity-100" />
+                                        <ArrowRight className="h-5 w-5 opacity-0 transition-all group-hover:translate-x-1 group-hover:opacity-100" />
                                     </a>
                                 ))}
                             </nav>
+                        </div>
 
-                            <div className="mt-16 border-t border-black/10 pt-10 dark:border-white/10">
-                                <h3 className="mb-4 text-xs font-semibold tracking-wider uppercase opacity-50">
-                                    Company
-                                </h3>
-                                <div className="space-y-3">
-                                    {menuSections.map((section) => (
-                                        <a
-                                            key={section.title}
-                                            href={section.href}
-                                            className="block text-base text-black/60 transition-colors hover:text-black dark:text-white/60 dark:hover:text-white"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                setIsMenuOpen(false);
-                                                setTimeout(() => {
-                                                    const element =
-                                                        document.querySelector(
-                                                            section.href,
-                                                        );
-                                                    element?.scrollIntoView({
-                                                        behavior: 'smooth',
-                                                    });
-                                                }, 300);
-                                            }}
-                                        >
-                                            {section.title}
-                                        </a>
-                                    ))}
+                        {/* Footer */}
+                        <div className="border-t border-black/10 px-6 py-5 dark:border-white/10">
+                            <div className="flex items-center justify-between text-xs text-black/50 dark:text-white/50">
+                                <span>© {new Date().getFullYear()} VerveLab</span>
+                                <div className="flex gap-4">
+                                    <a href="#" className="hover:text-black dark:hover:text-white">Privacy</a>
+                                    <a href="#" className="hover:text-black dark:hover:text-white">Terms</a>
                                 </div>
                             </div>
                         </div>
@@ -694,16 +737,17 @@ export default function Welcome({
 
                         <div className="grid gap-6 lg:grid-cols-2">
                             {events.map((event, index) => (
-                                <div
+                                <Link
                                     key={index}
-                                    className="group relative overflow-hidden rounded-2xl border border-black/10 bg-white p-8 transition-all hover:border-black/20 dark:border-white/10 dark:bg-black dark:hover:border-white/20"
+                                    href="/event/view-event"
+                                    className="group relative overflow-hidden rounded-2xl border border-black/10 bg-white p-8 transition-all hover:border-black/20 hover:-translate-y-1 dark:border-white/10 dark:bg-black dark:hover:border-white/20"
                                 >
                                     <div className="relative z-10">
                                         <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs dark:border-white/10">
                                             <Calendar className="h-3.5 w-3.5" />
                                             <span>{event.location}</span>
                                         </div>
-                                        <h3 className="mb-3 text-3xl font-medium tracking-tight">
+                                        <h3 className="mb-3 text-3xl font-medium tracking-tight transition-opacity group-hover:opacity-70">
                                             {event.title}
                                         </h3>
                                         <p className="text-base text-black/70 dark:text-white/70">
@@ -716,7 +760,7 @@ export default function Welcome({
                                             {formatDate(event.end_date)}
                                         </p>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </div>
@@ -742,18 +786,9 @@ export default function Welcome({
 
                         <div className="grid grid-cols-2 gap-px bg-black/5 md:grid-cols-3 lg:grid-cols-6 dark:bg-white/5">
                             {clients.map((client, index) => (
-                                <a
+                                <div
                                     key={index}
-                                    href={
-                                        client.website
-                                            ? client.website.startsWith('http')
-                                                ? client.website
-                                                : `https://${client.website}`
-                                            : '#'
-                                    }
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="group flex flex-col items-center justify-center bg-white p-14 text-center transition-all duration-300 hover:bg-black/[0.03] dark:bg-black dark:hover:bg-white/[0.03]"
+                                    className="group flex flex-col items-center justify-center bg-white p-14 text-center transition-all duration-300 dark:bg-black"
                                 >
                                     <div className="client-logo-wrapper mb-6 h-24 w-24 overflow-hidden rounded-2xl">
                                         <img
@@ -765,7 +800,7 @@ export default function Welcome({
                                     <div className="text-base font-medium tracking-tight">
                                         {client.name}
                                     </div>
-                                </a>
+                                </div>
                             ))}
                         </div>
                     </div>
@@ -788,7 +823,7 @@ export default function Welcome({
 
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                             {galleries.map((item, index) => (
-                                <a
+                                <Link
                                     key={index}
                                     href="/gallery/view-gallery"
                                     className="gallery-item group relative aspect-[4/5] overflow-hidden rounded-xl bg-black/5 dark:bg-white/5"
@@ -803,7 +838,7 @@ export default function Welcome({
                                             {item.title}
                                         </span>
                                     </div>
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>
@@ -836,7 +871,7 @@ export default function Welcome({
                                     Email
                                 </div>
                                 <p className="text-base font-medium">
-                                    hello@vervelab.io
+                                    VerveLab@gmail.com
                                 </p>
                                 <p className="mt-1 text-sm font-light text-black/50 dark:text-white/50">
                                     We reply within 24 hours
@@ -851,10 +886,10 @@ export default function Welcome({
                                     Phone
                                 </div>
                                 <p className="text-base font-medium">
-                                    +62 21 1234 5678
+                                    +62 856 9576 6484
                                 </p>
                                 <p className="mt-1 text-sm font-light text-black/50 dark:text-white/50">
-                                    Mon–Fri, 9am–6pm WIB
+                                    Mon–Fri, 9 AM – 5 PM GMT +7
                                 </p>
                             </div>
 
@@ -863,13 +898,13 @@ export default function Welcome({
                                     <MapPin className="h-5 w-5 opacity-60" />
                                 </div>
                                 <div className="mb-1 text-xs font-semibold tracking-wider text-black/40 uppercase dark:text-white/40">
-                                    Office
+                                    School
                                 </div>
                                 <p className="text-base font-medium">
-                                    Jakarta, Indonesia
+                                    East Jakarta, Indonesia
                                 </p>
                                 <p className="mt-1 text-sm font-light text-black/50 dark:text-white/50">
-                                    Sudirman Central Business District
+                                    Cipinang Besar
                                 </p>
                             </div>
                         </div>
@@ -925,7 +960,7 @@ export default function Welcome({
                                     Terms
                                 </a>
                                 <a
-                                    href=""
+                                    href="#contact"
                                     className="link-underline font-medium"
                                 >
                                     Contact

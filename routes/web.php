@@ -21,8 +21,9 @@ Route::get('/gallery/view-gallery', [UserController::class, 'viewGallery'])->nam
 
 Route::get('/product/detail-product/{product}', [UserController::class, 'detailProduct'])->name('detailProduct');
 Route::get('/article/detail-article/{article}', [UserController::class, 'detailArticle'])->name('detailArticle');
+Route::get('/event/detail-event/{event}', [UserController::class, 'detailEvent'])->name('detailEvent');
 
-Route::get('/product/checkout/{product}', [UserController::class, 'checkout'])->name('checkout');
+Route::get('/product/checkout/{product:slug}', [UserController::class, 'checkout'])->name('checkout');
 
 
 Route::middleware(['auth', 'verified'])->group(function () {

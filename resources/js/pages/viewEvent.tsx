@@ -1,7 +1,7 @@
 import { Event } from '@/components/features/events/types';
 import { SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowRight, X } from 'lucide-react';
+import { ArrowRight, X, Calendar, MapPin, Clock } from 'lucide-react';
 import { useState } from 'react';
 
 interface eventProps extends SharedData {
@@ -12,6 +12,17 @@ export default function Events({ events }: eventProps) {
     const [selectedEvent, setSelectedEvent] = useState<number | null>(null);
 
     const { events: eventData } = usePage<eventProps>().props;
+
+    // Format date if available
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+    };
 
     return (
         <>
@@ -38,12 +49,21 @@ export default function Events({ events }: eventProps) {
           to { opacity: 1; transform: scale(1); }
         }
 
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
         .animate-fade-in-up {
           animation: fadeInUp 0.8s ease-out forwards;
         }
 
         .animate-scale-in {
           animation: scaleIn 0.6s ease-out forwards;
+        }
+
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-out forwards;
         }
 
         .image-reveal {
@@ -113,6 +133,22 @@ export default function Events({ events }: eventProps) {
             linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
             linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
         }
+
+        .gradient-overlay {
+          background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+        }
+
+        .dark .gradient-overlay {
+          background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, transparent 100%);
+        }
+
+        @media (max-width: 768px) {
+          .modal-content {
+            margin: 0;
+            border-radius: 0;
+            max-height: 100vh;
+          }
+        }
       `}</style>
 
             <div className="min-h-screen bg-white text-black dark:bg-black dark:text-white">
@@ -176,12 +212,13 @@ export default function Events({ events }: eventProps) {
                                         <div className="text-xs font-semibold tracking-wider text-black/40 uppercase dark:text-white/40">
                                             {event.title}
                                         </div>
-                                        <h3 className="text-xl font-medium tracking-tight">
+                                        <h3 className="text-xl font-medium tracking-tight line-clamp-2">
                                             {event.content}
                                         </h3>
-                                        <p className="text-sm font-light text-black/60 dark:text-white/60">
-                                            {event.location}
-                                        </p>
+                                        <div className="flex items-center gap-2 text-sm font-light text-black/60 dark:text-white/60">
+                                            <MapPin className="h-4 w-4" />
+                                            <p className="line-clamp-1">{event.location}</p>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
@@ -192,49 +229,111 @@ export default function Events({ events }: eventProps) {
                 {/* Event Detail Modal */}
                 {selectedEvent && (
                     <>
+                        {/* Backdrop */}
                         <div
-                            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md transition-opacity duration-500"
+                            className="animate-fade-in fixed inset-0 z-50 bg-black/80 backdrop-blur-md"
                             onClick={() => setSelectedEvent(null)}
                         />
+                        
+                        {/* Modal */}
                         <div className="fixed inset-0 z-50 overflow-y-auto">
-                            <div className="flex min-h-full items-center justify-center p-4">
-                                <div className="relative w-full max-w-6xl rounded-2xl border border-black/10 bg-white dark:border-white/10 dark:bg-black">
-                                    <button
-                                        onClick={() => setSelectedEvent(null)}
-                                        className="absolute top-6 right-6 z-10 rounded-full p-2 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
-                                    >
-                                        <X className="h-5 w-5" />
-                                    </button>
+                            <div className="flex min-h-full items-center justify-center p-4 md:p-8">
+                                {eventData
+                                    .filter((e) => e.id === selectedEvent)
+                                    .map((event) => (
+                                        <div
+                                            key={event.id}
+                                            className="animate-scale-in modal-content relative w-full max-w-5xl overflow-hidden rounded-3xl border border-black/10 bg-white shadow-2xl dark:border-white/10 dark:bg-black"
+                                        >
+                                            {/* Close Button */}
+                                            <button
+                                                onClick={() => setSelectedEvent(null)}
+                                                className="absolute top-4 right-4 z-20 rounded-full bg-black/80 p-2.5 text-white backdrop-blur-sm transition-all hover:bg-black hover:scale-110 dark:bg-white/80 dark:text-black dark:hover:bg-white md:top-6 md:right-6"
+                                            >
+                                                <X className="h-5 w-5" />
+                                            </button>
 
-                                    {eventData
-                                        .filter((e) => e.id === selectedEvent)
-                                        .map((event) => (
-                                            <div key={event.id}>
-                                                <div className="aspect-[21/9] overflow-hidden rounded-t-2xl bg-black/5 dark:bg-white/5">
-                                                    <img
-                                                        src={`/storage/${event.image}`}
-                                                        className="h-full w-full object-cover"
-                                                    />
-                                                </div>
-
-                                                <div className="p-12">
-                                                    <div className="mb-4 text-xs font-semibold tracking-wider text-black/40 uppercase dark:text-white/40">
+                                            {/* Hero Image with Overlay */}
+                                            <div className="relative aspect-[21/9] overflow-hidden bg-black/5 dark:bg-white/5">
+                                                <img
+                                                    src={`/storage/${event.image}`}
+                                                    alt={event.title}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                                <div className="gradient-overlay absolute inset-0" />
+                                                
+                                                {/* Event Category Badge */}
+                                                <div className="absolute top-6 left-6">
+                                                    <div className="inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold tracking-wider text-white uppercase backdrop-blur-md">
                                                         {event.title}
                                                     </div>
-                                                    <h2 className="mb-4 text-[clamp(2rem,4vw,3rem)] font-semibold tracking-tight">
-                                                        {event.content}
-                                                    </h2>
-                                                    <p className="mb-8 text-xl font-light text-black/70 dark:text-white/70">
-                                                        {event.description}
-                                                    </p>
-                                                    <p className="mb-4 text-base leading-relaxed text-black/70 dark:text-white/70">
-                                                        Location:{' '}
-                                                        {event.location}
-                                                    </p>
                                                 </div>
                                             </div>
-                                        ))}
-                                </div>
+
+                                            {/* Content */}
+                                            <div className="p-8 md:p-12">
+                                                {/* Event Title */}
+                                                <h2 className="mb-6 text-[clamp(1.75rem,4vw,2.5rem)] leading-tight font-semibold tracking-tight text-balance">
+                                                    {event.content}
+                                                </h2>
+
+                                                {/* Event Meta Info */}
+                                                <div className="mb-8 grid gap-4 md:grid-cols-2">
+                                                    {/* Location */}
+                                                    <div className="flex items-start gap-3 rounded-xl border border-black/10 p-4 dark:border-white/10">
+                                                        <div className="mt-0.5 rounded-lg bg-black/5 p-2 dark:bg-white/5">
+                                                            <MapPin className="h-5 w-5 text-black/60 dark:text-white/60" />
+                                                        </div>
+                                                        <div>
+                                                            <p className="mb-1 text-xs font-semibold tracking-wider text-black/40 uppercase dark:text-white/40">
+                                                                Location
+                                                            </p>
+                                                            <p className="font-medium leading-snug">
+                                                                {event.location}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Date (if available) */}
+                                                    {event.created_at && (
+                                                        <div className="flex items-start gap-3 rounded-xl border border-black/10 p-4 dark:border-white/10">
+                                                            <div className="mt-0.5 rounded-lg bg-black/5 p-2 dark:bg-white/5">
+                                                                <Calendar className="h-5 w-5 text-black/60 dark:text-white/60" />
+                                                            </div>
+                                                            <div>
+                                                                <p className="mb-1 text-xs font-semibold tracking-wider text-black/40 uppercase dark:text-white/40">
+                                                                    Date
+                                                                </p>
+                                                                <p className="font-medium leading-snug">
+                                                                    {formatDate(String(event.created_at))}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Description */}
+                                                {event.description && (
+                                                    <div className="mb-8 rounded-2xl border border-black/5 bg-black/[0.02] p-6 dark:border-white/5 dark:bg-white/[0.02]">
+                                                        <h3 className="mb-3 text-sm font-semibold tracking-wider text-black/60 uppercase dark:text-white/60">
+                                                            About this Event
+                                                        </h3>
+                                                        <p className="text-base leading-relaxed text-black/70 dark:text-white/70">
+                                                            {event.description}
+                                                        </p>
+                                                    </div>
+                                                )}
+
+                                                {/* Action Buttons */}
+                                                <div className="flex flex-wrap gap-3">
+                                                    <button className="group inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition-all hover:gap-3 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90">
+                                                        Register Now
+                                                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                             </div>
                         </div>
                     </>

@@ -10,13 +10,6 @@ interface ClientProps extends SharedData {
 export default function Clients() {
     const { clients } = usePage<ClientProps>().props;
 
-    const formatUrl = (url: string) => {
-        if (!url) return '#';
-        return url.startsWith('http://') || url.startsWith('https://')
-            ? url
-            : `https://${url}`;
-    };
-
     return (
         <>
             <Head title="Clients - VerveLab">
@@ -72,11 +65,8 @@ export default function Clients() {
                     <div className="mx-auto max-w-[1400px]">
                         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                             {clients.map((client) => (
-                                <a
+                                <div
                                     key={client.id}
-                                    href={formatUrl(client.website || '')}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
                                     className="group block rounded-2xl border border-black/5 p-6 transition-all hover:-translate-y-1 hover:border-black/10 hover:bg-black/[0.02] dark:border-white/5 dark:hover:border-white/10 dark:hover:bg-white/[0.02]"
                                 >
                                     <div className="mb-6 aspect-[4/3] overflow-hidden rounded-xl bg-black/5 dark:bg-white/5">
@@ -94,11 +84,11 @@ export default function Clients() {
                                         <h3 className="text-xl font-medium tracking-tight">
                                             {client.name}
                                         </h3>
-                                        <p className="text-sm font-light text-black/60 dark:text-white/60">
+                                        {/* <p className="text-sm font-light text-black/60 dark:text-white/60">
                                             {client.website}
-                                        </p>
+                                        </p> */}
                                     </div>
-                                </a>
+                                </div>
                             ))}
                         </div>
                     </div>

@@ -84,7 +84,7 @@ class ClientController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'logo' => 'nullable|image|max:2048|mimes:jpg,png',
+            'logo' => 'nullable|image|max:9048|mimes:jpg,png',
             'website' => 'nullable|string',
             'description' => 'nullable|string',
         ]);

@@ -4,4 +4,5 @@ export type Client = {
     logo: string | null;
     website: string | null;
     description: string | null;
+    slug: string;
 }

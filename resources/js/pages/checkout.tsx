@@ -1,40 +1,29 @@
 import { Product } from '@/components/features/products/types';
 import { SharedData } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import {
     ArrowLeft,
     ArrowRight,
-    Check,
     CreditCard,
-    ShoppingBag,
     Trash2,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface CheckoutProps extends SharedData {
-    cartItems?: Array<{
-        product: Product;
-        quantity: number;
-    }>;
+    product?: Product;
+}
+
+interface CartItem {
+    product: Product;
+    quantity: number;
 }
 
 export default function Checkout() {
-    const { cartItems = [] } = {} as CheckoutProps; // Mock data for demo
-
-    // Mock cart items for demonstration
-    const [cart, setCart] = useState([
-        {
-            product: {
-                id: 1,
-                name: 'Product Example',
-                price: 1500000,
-                image: 'products/sample.jpg',
-                description: 'Sample product',
-            },
-            quantity: 1,
-        },
-    ]);
-
+    const { props } = usePage();
+    const { product } = props as unknown as CheckoutProps;
+    
+    // Initialize cart with the product from backend if available
+    const [cart, setCart] = useState<CartItem[]>([]);
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
@@ -42,8 +31,30 @@ export default function Checkout() {
         address: '',
         city: '',
         postalCode: '',
-        notes: '',
     });
+
+    // Initialize cart when component mounts or product changes
+    useEffect(() => {
+        if (product) {
+            // If a product is passed from backend, add it to cart
+            setCart([{
+                product: {
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    description: product.description || '',
+                    content: '',
+                    order: 0,
+                    slug: ''
+                },
+                quantity: 1
+            }]);
+        } else {
+            // If no product, initialize empty cart
+            setCart([]);
+        }
+    }, [product]);
 
     const updateQuantity = (index: number, newQuantity: number) => {
         if (newQuantity < 1) return;
@@ -66,12 +77,12 @@ export default function Checkout() {
 
     const calculateTotal = () => {
         const subtotal = calculateSubtotal();
-        const tax = subtotal * 0.11; // 11% tax
+        const tax = subtotal * 0.11;
         return subtotal + tax;
     };
 
     const generateWhatsAppLink = () => {
-        const phoneNumber = '6281234567890'; // ganti ke nomor WA tujuan (pakai format internasional, tanpa +)
+        const phoneNumber = '6285695766484';
 
         const itemsText = cart
             .map(
@@ -100,9 +111,6 @@ ${itemsText}
 🧾 Pajak (11%): Rp ${(calculateSubtotal() * 0.11).toLocaleString('id-ID')}
 ✅ Total: Rp ${calculateTotal().toLocaleString('id-ID')}
 
-📝 Catatan:
-${formData.notes || '-'}
-
 Terima kasih 🙏
 `;
 
@@ -112,7 +120,20 @@ Terima kasih 🙏
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-
+        
+        // Validate cart is not empty
+        if (cart.length === 0) {
+            alert('Keranjang belanja kosong. Silahkan tambahkan produk terlebih dahulu.');
+            return;
+        }
+        
+        // Validate form data
+        if (!formData.fullName || !formData.email || !formData.phone || 
+            !formData.address || !formData.city || !formData.postalCode) {
+            alert('Silahkan lengkapi semua informasi pengiriman.');
+            return;
+        }
+        
         const waLink = generateWhatsAppLink();
         window.open(waLink, '_blank');
     };
@@ -199,12 +220,11 @@ Terima kasih 🙏
                 </section>
 
                 {/* Main Content */}
-                <section className="mx-auto max-w-[1400px] px-6 py-8 lg:px-12 lg:py-12">
+                <section className="mx-auto max-w-[1400px] px-6 py-6 lg:px-12 lg:py-8">
                     {/* Page Title */}
-                    <div className="mb-10">
-                        <div className="mb-3 flex items-center gap-3">
-                            <ShoppingBag className="h-6 w-6 text-black/40 dark:text-white/40" />
-                            <h1 className="text-[clamp(2rem,4vw,3rem)] leading-tight font-semibold tracking-tight">
+                    <div className="mb-12">
+                        <div className="mb-3 flex items-center gap-2">
+                            <h1 className="text-[clamp(2.5rem,5vw,4rem)] leading-[0.95] font-semibold tracking-tighter">
                                 Checkout
                             </h1>
                         </div>
@@ -220,7 +240,7 @@ Terima kasih 🙏
                                 <div className="space-y-8">
                                     {/* Contact Information */}
                                     <div>
-                                        <h2 className="mb-4 text-lg font-semibold tracking-tight">
+                                        <h2 className="mb-4 text-xl font-semibold tracking-tight">
                                             Contact Information
                                         </h2>
                                         <div className="space-y-4">
@@ -239,7 +259,7 @@ Terima kasih 🙏
                                                                 e.target.value,
                                                         })
                                                     }
-                                                    className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
+                                                    className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-base transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
                                                     placeholder="Enter your full name"
                                                 />
                                             </div>
@@ -259,7 +279,7 @@ Terima kasih 🙏
                                                                     .value,
                                                             })
                                                         }
-                                                        className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
+                                                        className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-base transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
                                                         placeholder="your@email.com"
                                                     />
                                                 </div>
@@ -278,8 +298,8 @@ Terima kasih 🙏
                                                                     .value,
                                                             })
                                                         }
-                                                        className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
-                                                        placeholder="+62 812 3456 7890"
+                                                        className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-base transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
+                                                        placeholder="+62 ..."
                                                     />
                                                 </div>
                                             </div>
@@ -288,7 +308,7 @@ Terima kasih 🙏
 
                                     {/* Shipping Address */}
                                     <div className="border-t border-black/10 pt-8 dark:border-white/10">
-                                        <h2 className="mb-4 text-lg font-semibold tracking-tight">
+                                        <h2 className="mb-4 text-xl font-semibold tracking-tight">
                                             Shipping Address
                                         </h2>
                                         <div className="space-y-4">
@@ -307,7 +327,7 @@ Terima kasih 🙏
                                                                 e.target.value,
                                                         })
                                                     }
-                                                    className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
+                                                    className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-base transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
                                                     placeholder="Enter your street address"
                                                 />
                                             </div>
@@ -327,7 +347,7 @@ Terima kasih 🙏
                                                                     .value,
                                                             })
                                                         }
-                                                        className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
+                                                        className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-base transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
                                                         placeholder="City"
                                                     />
                                                 </div>
@@ -349,31 +369,12 @@ Terima kasih 🙏
                                                                         .value,
                                                             })
                                                         }
-                                                        className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
+                                                        className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-base transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
                                                         placeholder="12345"
                                                     />
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-
-                                    {/* Additional Notes */}
-                                    <div className="border-t border-black/10 pt-8 dark:border-white/10">
-                                        <h2 className="mb-4 text-lg font-semibold tracking-tight">
-                                            Order Notes (Optional)
-                                        </h2>
-                                        <textarea
-                                            rows={4}
-                                            value={formData.notes}
-                                            onChange={(e) =>
-                                                setFormData({
-                                                    ...formData,
-                                                    notes: e.target.value,
-                                                })
-                                            }
-                                            className="w-full rounded-lg border border-black/10 bg-transparent px-4 py-3 text-sm transition-colors outline-none focus:border-black/30 dark:border-white/10 dark:focus:border-white/30"
-                                            placeholder="Any special instructions for your order?"
-                                        />
                                     </div>
                                 </div>
                             </div>
@@ -381,159 +382,164 @@ Terima kasih 🙏
                             {/* Right - Order Summary */}
                             <div className="lg:col-span-5">
                                 <div className="sticky top-24">
-                                    <div className="rounded-2xl border border-black/10 p-6 dark:border-white/10">
-                                        <h2 className="mb-6 text-lg font-semibold tracking-tight">
+                                    <div className="rounded-xl border border-black/10 p-6 dark:border-white/10">
+                                        <h2 className="mb-5 text-xl font-semibold tracking-tight">
                                             Order Summary
                                         </h2>
 
                                         {/* Cart Items */}
-                                        <div className="mb-6 space-y-4">
-                                            {cart.map((item, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="flex gap-4 rounded-lg border border-black/5 p-4 dark:border-white/5"
-                                                >
-                                                    <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-black/5 dark:bg-white/5">
-                                                        <img
-                                                            src={`/storage/${item.product.image}`}
-                                                            alt={
-                                                                item.product
-                                                                    .name
-                                                            }
-                                                            className="h-full w-full object-cover"
-                                                        />
-                                                    </div>
-                                                    <div className="flex flex-1 flex-col">
-                                                        <div className="flex items-start justify-between gap-2">
-                                                            <h3 className="text-sm font-medium tracking-tight">
-                                                                {
+                                        <div className="mb-5 space-y-4">
+                                            {cart.length === 0 ? (
+                                                <div className="text-center py-8">
+                                                    <p className="text-black/50 dark:text-white/50">
+                                                        Keranjang belanja kosong
+                                                    </p>
+                                                    <Link 
+                                                        href="/product/view-product"
+                                                        className="mt-4 inline-flex items-center gap-2 text-sm font-medium hover:underline"
+                                                    >
+                                                        <ArrowLeft className="h-4 w-4" />
+                                                        Pilih produk terlebih dahulu
+                                                    </Link>
+                                                </div>
+                                            ) : (
+                                                cart.map((item, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="flex gap-4 rounded-lg border border-black/5 p-4 dark:border-white/5"
+                                                    >
+                                                        <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-black/5 dark:bg-white/5">
+                                                            <img
+                                                                src={`/storage/${item.product.image}`}
+                                                                alt={
                                                                     item.product
                                                                         .name
                                                                 }
-                                                            </h3>
-                                                            <button
-                                                                type="button"
-                                                                onClick={() =>
-                                                                    removeItem(
-                                                                        index,
-                                                                    )
-                                                                }
-                                                                className="text-black/40 transition-colors hover:text-red-500 dark:text-white/40"
-                                                            >
-                                                                <Trash2 className="h-4 w-4" />
-                                                            </button>
+                                                                className="h-full w-full object-cover"
+                                                            />
                                                         </div>
-                                                        <div className="mt-2 flex items-center justify-between">
-                                                            <div className="flex items-center gap-2">
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() =>
-                                                                        updateQuantity(
-                                                                            index,
-                                                                            item.quantity -
-                                                                                1,
-                                                                        )
-                                                                    }
-                                                                    className="flex h-6 w-6 items-center justify-center rounded border border-black/10 text-xs transition-colors hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
-                                                                >
-                                                                    -
-                                                                </button>
-                                                                <span className="w-8 text-center text-sm">
+                                                        <div className="flex flex-1 flex-col">
+                                                            <div className="flex items-start justify-between gap-2">
+                                                                <h3 className="text-base font-medium tracking-tight line-clamp-2">
                                                                     {
-                                                                        item.quantity
+                                                                        item.product
+                                                                            .name
                                                                     }
-                                                                </span>
+                                                                </h3>
                                                                 <button
                                                                     type="button"
                                                                     onClick={() =>
-                                                                        updateQuantity(
+                                                                        removeItem(
                                                                             index,
-                                                                            item.quantity +
-                                                                                1,
                                                                         )
                                                                     }
-                                                                    className="flex h-6 w-6 items-center justify-center rounded border border-black/10 text-xs transition-colors hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
+                                                                    className="text-black/40 transition-colors hover:text-red-500 dark:text-white/40"
                                                                 >
-                                                                    +
+                                                                    <Trash2 className="h-4 w-4" />
                                                                 </button>
                                                             </div>
-                                                            <span className="text-sm font-medium">
-                                                                Rp{' '}
-                                                                {Number(
-                                                                    item.product
-                                                                        .price *
-                                                                        item.quantity,
-                                                                ).toLocaleString(
-                                                                    'id-ID',
-                                                                )}
-                                                            </span>
+                                                            <div className="mt-3 flex items-center justify-between">
+                                                                <div className="flex items-center gap-2">
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() =>
+                                                                            updateQuantity(
+                                                                                index,
+                                                                                item.quantity -
+                                                                                    1,
+                                                                            )
+                                                                        }
+                                                                        className="flex h-7 w-7 items-center justify-center rounded border border-black/10 text-sm transition-colors hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
+                                                                    >
+                                                                        -
+                                                                    </button>
+                                                                    <span className="w-8 text-center text-sm">
+                                                                        {
+                                                                            item.quantity
+                                                                        }
+                                                                    </span>
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={() =>
+                                                                            updateQuantity(
+                                                                                index,
+                                                                                item.quantity +
+                                                                                    1,
+                                                                            )
+                                                                        }
+                                                                        className="flex h-7 w-7 items-center justify-center rounded border border-black/10 text-sm transition-colors hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
+                                                                    >
+                                                                        +
+                                                                    </button>
+                                                                </div>
+                                                                <span className="text-base font-medium">
+                                                                    Rp{' '}
+                                                                    {Number(
+                                                                        item.product
+                                                                            .price *
+                                                                            item.quantity,
+                                                                    ).toLocaleString(
+                                                                        'id-ID',
+                                                                    )}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
+                                                ))
+                                            )}
+                                        </div>
+
+                                        {/* Price Breakdown - Only show if cart has items */}
+                                        {cart.length > 0 && (
+                                            <>
+                                                <div className="space-y-3 border-t border-black/10 pt-5 dark:border-white/10">
+                                                    <div className="flex justify-between text-base">
+                                                        <span className="text-black/70 dark:text-white/70">
+                                                            Subtotal
+                                                        </span>
+                                                        <span className="font-medium">
+                                                            Rp{' '}
+                                                            {calculateSubtotal().toLocaleString(
+                                                                'id-ID',
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex justify-between text-base">
+                                                        <span className="text-black/70 dark:text-white/70">
+                                                            Tax (11%)
+                                                        </span>
+                                                        <span className="font-medium">
+                                                            Rp{' '}
+                                                            {(
+                                                                calculateSubtotal() *
+                                                                0.11
+                                                            ).toLocaleString('id-ID')}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex justify-between border-t border-black/10 pt-3 dark:border-white/10">
+                                                        <span className="text-lg font-semibold">
+                                                            Total
+                                                        </span>
+                                                        <span className="text-xl font-semibold">
+                                                            Rp{' '}
+                                                            {calculateTotal().toLocaleString(
+                                                                'id-ID',
+                                                            )}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            ))}
-                                        </div>
 
-                                        {/* Price Breakdown */}
-                                        <div className="space-y-3 border-t border-black/10 pt-6 dark:border-white/10">
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-black/70 dark:text-white/70">
-                                                    Subtotal
-                                                </span>
-                                                <span className="font-medium">
-                                                    Rp{' '}
-                                                    {calculateSubtotal().toLocaleString(
-                                                        'id-ID',
-                                                    )}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between text-sm">
-                                                <span className="text-black/70 dark:text-white/70">
-                                                    Tax (11%)
-                                                </span>
-                                                <span className="font-medium">
-                                                    Rp{' '}
-                                                    {(
-                                                        calculateSubtotal() *
-                                                        0.11
-                                                    ).toLocaleString('id-ID')}
-                                                </span>
-                                            </div>
-                                            <div className="flex justify-between border-t border-black/10 pt-3 dark:border-white/10">
-                                                <span className="font-semibold">
-                                                    Total
-                                                </span>
-                                                <span className="text-xl font-semibold">
-                                                    Rp{' '}
-                                                    {calculateTotal().toLocaleString(
-                                                        'id-ID',
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Checkout Button */}
-                                        <button
-                                            type="submit"
-                                            className="group mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-medium text-white transition-all hover:gap-4 dark:bg-white dark:text-black"
-                                        >
-                                            <CreditCard className="h-4 w-4" />
-                                            Complete Purchase
-                                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                                        </button>
-
-                                        {/* Security Note */}
-                                        <div className="mt-4 space-y-2">
-                                            <div className="flex items-center gap-2 text-xs text-black/60 dark:text-white/60">
-                                                <Check className="h-3 w-3" />
-                                                <span>Secure checkout</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-xs text-black/60 dark:text-white/60">
-                                                <Check className="h-3 w-3" />
-                                                <span>
-                                                    Money-back guarantee
-                                                </span>
-                                            </div>
-                                        </div>
+                                                {/* Checkout Button */}
+                                                <button
+                                                    type="submit"
+                                                    className="cursor-pointer group mt-6 flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-3.5 text-base font-medium text-white transition-all hover:gap-4 dark:bg-white dark:text-black"
+                                                >
+                                                    <CreditCard className="h-5 w-5" />
+                                                    Complete Purchase
+                                                    <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                                                </button>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             </div>

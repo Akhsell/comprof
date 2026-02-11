@@ -1,18 +1,13 @@
 import { Article } from '@/components/features/articles/types';
 import { SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowRight, X } from 'lucide-react';
-import { useState } from 'react';
+import { Head, Link } from '@inertiajs/react';
+import { ArrowRight } from 'lucide-react';
 
 interface articleProps extends SharedData {
     articles: Article[];
 }
 
-export default function Articles() {
-    const [selectedArticle, setSelectedArticle] = useState<number | null>(null);
-
-    const { articles } = usePage<articleProps>().props;
-
+export default function Articles({ articles }: articleProps) {
     return (
         <>
             <Head title="Articles - VerveLab">
@@ -120,11 +115,12 @@ export default function Articles() {
                 <header className="fixed top-0 right-0 left-0 z-50 border-b border-black/10 bg-white/90 backdrop-blur-xl dark:border-white/10 dark:bg-black/90">
                     <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
                         <nav className="flex h-16 items-center justify-between">
-                            <Link
-                                href="/"
-                                className="text-xl font-semibold tracking-tight"
-                            >
-                                VerveLab
+                            <Link href="/" className="flex items-center">
+                                <img
+                                    src="/image/VerveLab6.png"
+                                    alt="VerveLab"
+                                    className="h-8 w-auto object-contain"
+                                />
                             </Link>
                             <Link
                                 href="/"
@@ -159,12 +155,10 @@ export default function Articles() {
                     <div className="mx-auto max-w-[1400px]">
                         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                             {articles.map((article: Article) => (
-                                <div
+                                <Link
                                     key={article.id}
+                                    href={`/article/detail-article/${article.slug}`}
                                     className="group cursor-pointer rounded-2xl border border-black/5 p-6 transition-all hover:-translate-y-1 hover:border-black/10 hover:bg-black/[0.02] dark:border-white/5 dark:hover:border-white/10 dark:hover:bg-white/[0.02]"
-                                    onClick={() =>
-                                        setSelectedArticle(Number(article.id))
-                                    }
                                 >
                                     <div className="mb-6 aspect-[4/3] overflow-hidden rounded-xl bg-black/5 dark:bg-white/5">
                                         <img
@@ -177,69 +171,18 @@ export default function Articles() {
                                         <div className="text-xs font-semibold tracking-wider text-black/40 uppercase dark:text-white/40">
                                             {article.title}
                                         </div>
-                                        <h3 className="text-xl font-medium tracking-tight">
+                                        <h3 className="text-xl font-medium tracking-tight line-clamp-2">
                                             {article.content}
                                         </h3>
                                         <p className="text-sm font-light text-black/60 dark:text-white/60">
                                             {article.author}
                                         </p>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </div>
                 </section>
-
-                {/* Article Detail Modal */}
-                {selectedArticle && (
-                    <>
-                        <div
-                            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md transition-opacity duration-500"
-                            onClick={() => setSelectedArticle(null)}
-                        />
-                        <div className="fixed inset-0 z-50 overflow-y-auto">
-                            <div className="flex min-h-full items-center justify-center p-4">
-                                <div className="relative w-full max-w-6xl rounded-2xl border border-black/10 bg-white dark:border-white/10 dark:bg-black">
-                                    <button
-                                        onClick={() => setSelectedArticle(null)}
-                                        className="absolute top-6 right-6 z-10 rounded-full p-2 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
-                                    >
-                                        <X className="h-5 w-5" />
-                                    </button>
-
-                                    {articles
-                                        .filter(
-                                            (a) =>
-                                                Number(a.id) ===
-                                                selectedArticle,
-                                        )
-                                        .map((article) => (
-                                            <div key={article.id}>
-                                                <div className="aspect-[21/9] overflow-hidden rounded-t-2xl bg-black/5 dark:bg-white/5">
-                                                    <img
-                                                        src={`/storage/${article.thumbnail}`}
-                                                        className="h-full w-full object-cover"
-                                                    />
-                                                </div>
-
-                                                <div className="p-12">
-                                                    <div className="mb-4 text-xs font-semibold tracking-wider text-black/40 uppercase dark:text-white/40">
-                                                        {article.title}
-                                                    </div>
-                                                    <h2 className="mb-4 text-[clamp(2rem,4vw,3rem)] font-semibold tracking-tight">
-                                                        {article.content}
-                                                    </h2>
-                                                    <p className="mb-8 text-xl font-light text-black/70 dark:text-white/70">
-                                                        By {article.author}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                )}
 
                 {/* CTA Section */}
                 <section className="border-y border-black/10 px-6 py-20 lg:px-12 dark:border-white/10">

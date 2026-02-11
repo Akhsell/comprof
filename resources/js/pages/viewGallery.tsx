@@ -38,12 +38,36 @@ export default function Galleries() {
           to { opacity: 1; transform: scale(1); }
         }
 
+        @keyframes modalFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        @keyframes modalSlideUp {
+          from { 
+            opacity: 0; 
+            transform: translateY(20px) scale(0.98);
+          }
+          to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1);
+          }
+        }
+
         .animate-fade-in-up {
           animation: fadeInUp 0.8s ease-out forwards;
         }
 
         .animate-scale-in {
           animation: scaleIn 0.6s ease-out forwards;
+        }
+
+        .modal-overlay {
+          animation: modalFadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+          animation: modalSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .image-reveal {
@@ -185,38 +209,49 @@ export default function Galleries() {
                     </div>
                 </section>
 
-                {/* Gallery Detail Modal */}
+                {/* Gallery Detail Modal - IMPROVED */}
                 {selectedGallery && (
                     <>
                         <div
-                            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md transition-opacity duration-500"
+                            className="modal-overlay fixed inset-0 z-[60] bg-black/80 backdrop-blur-md"
                             onClick={() => setSelectedGallery(null)}
                         />
-                        <div className="fixed inset-0 z-50 overflow-y-auto">
-                            <div className="flex min-h-full items-center justify-center p-4">
-                                <div className="relative w-full max-w-6xl rounded-2xl border border-black/10 bg-white dark:border-white/10 dark:bg-black">
-                                    <button
-                                        onClick={() => setSelectedGallery(null)}
-                                        className="absolute top-6 right-6 z-10 rounded-full p-2 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
-                                    >
-                                        <X className="h-5 w-5" />
-                                    </button>
-
+                        <div className="fixed inset-0 z-[60] overflow-y-auto">
+                            <div className="flex min-h-full items-center justify-center p-4 sm:p-6 lg:p-8">
+                                <div className="modal-content relative w-full max-w-5xl">
                                     {galleries
                                         .filter((g) => g.id === selectedGallery)
                                         .map((gallery) => (
-                                            <div key={gallery.id}>
-                                                <div className="aspect-[21/9] overflow-hidden rounded-t-2xl bg-black/5 dark:bg-white/5">
+                                            <div
+                                                key={gallery.id}
+                                                className="relative overflow-hidden rounded-3xl border border-black/10 bg-white shadow-2xl dark:border-white/10 dark:bg-black"
+                                            >
+                                                {/* Close Button */}
+                                                <button
+                                                    onClick={() =>
+                                                        setSelectedGallery(null)
+                                                    }
+                                                    className="absolute top-4 right-4 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm transition-all hover:bg-white dark:bg-black/90 dark:hover:bg-black sm:top-6 sm:right-6"
+                                                >
+                                                    <X className="h-5 w-5" />
+                                                </button>
+
+                                                {/* Main Image */}
+                                                <div className="relative aspect-[16/9] overflow-hidden bg-black/5 dark:bg-white/5">
                                                     <img
                                                         src={`/storage/${gallery.image}`}
+                                                        alt={gallery.title}
                                                         className="h-full w-full object-cover"
                                                     />
-                                                </div>
-
-                                                <div className="p-12">
-                                                    <h2 className="mb-4 text-[clamp(2rem,4vw,3rem)] font-semibold tracking-tight">
-                                                        {gallery.title}
-                                                    </h2>
+                                                    {/* Gradient Overlay */}
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                                    
+                                                    {/* Title Overlay on Image */}
+                                                    <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8 lg:p-12">
+                                                        <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl lg:text-5xl">
+                                                            {gallery.title}
+                                                        </h2>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}

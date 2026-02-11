@@ -1,16 +1,13 @@
 import { Product } from '@/components/features/products/types';
 import { SharedData } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowRight, X } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowRight } from 'lucide-react';
 
 interface productProps extends SharedData {
     products: Product[];
 }
 
 export default function Products() {
-    const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
-
     const { products } = usePage<productProps>().props;
 
     return (
@@ -161,12 +158,10 @@ export default function Products() {
                     <div className="mx-auto max-w-[1400px]">
                         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                             {products.map((product: Product) => (
-                                <div
+                                <Link
                                     key={product.id}
+                                    href={`/product/detail-product/${product.slug}`}
                                     className="group cursor-pointer rounded-2xl border border-black/5 p-6 transition-all hover:-translate-y-1 hover:border-black/10 hover:bg-black/[0.02] dark:border-white/5 dark:hover:border-white/10 dark:hover:bg-white/[0.02]"
-                                    onClick={() =>
-                                        setSelectedProduct(product.id)
-                                    }
                                 >
                                     <div className="mb-6 aspect-[4/3] overflow-hidden rounded-xl bg-black/5 dark:bg-white/5">
                                         <img
@@ -177,81 +172,26 @@ export default function Products() {
                                     </div>
                                     <div className="space-y-2">
                                         <div className="text-xs font-semibold tracking-wider text-black/40 uppercase dark:text-white/40">
-                                            {product.description}
+                                            Product
                                         </div>
                                         <h3 className="text-xl font-medium tracking-tight">
                                             {product.name}
                                         </h3>
-                                        <p className="text-sm font-light text-black/60 dark:text-white/60">
+                                        <p className="text-sm font-light text-black/60 dark:text-white/60 line-clamp-2">
+                                            {product.description}
+                                        </p>
+                                        <p className="text-base font-medium pt-2">
                                             Rp{' '}
                                             {Number(
                                                 product.price,
                                             ).toLocaleString('id-ID')}
                                         </p>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </div>
                 </section>
-
-                {/* Product Detail Modal */}
-                {selectedProduct && (
-                    <>
-                        <div
-                            className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md transition-opacity duration-500"
-                            onClick={() => setSelectedProduct(null)}
-                        />
-                        <div className="fixed inset-0 z-50 overflow-y-auto">
-                            <div className="flex min-h-full items-center justify-center p-4">
-                                <div className="relative w-full max-w-6xl rounded-2xl border border-black/10 bg-white dark:border-white/10 dark:bg-black">
-                                    <button
-                                        onClick={() => setSelectedProduct(null)}
-                                        className="absolute top-6 right-6 z-10 rounded-full p-2 transition-colors hover:bg-black/5 dark:hover:bg-white/5"
-                                    >
-                                        <X className="h-5 w-5" />
-                                    </button>
-
-                                    {products
-                                        .filter((p) => p.id === selectedProduct)
-                                        .map((product) => (
-                                            <div key={product.id}>
-                                                <div className="aspect-[21/9] overflow-hidden rounded-t-2xl bg-black/5 dark:bg-white/5">
-                                                    <img
-                                                        src={`/storage/${product.image}`}
-                                                        className="h-full w-full object-cover"
-                                                    />
-                                                </div>
-
-                                                <div className="p-12">
-                                                    <div className="mb-4 text-xs font-semibold tracking-wider text-black/40 uppercase dark:text-white/40">
-                                                        {product.name}
-                                                    </div>
-                                                    <h2 className="mb-4 text-[clamp(2rem,4vw,3rem)] font-semibold tracking-tight">
-                                                        {product.name}
-                                                    </h2>
-                                                    <p className="mb-8 text-xl font-light text-black/70 dark:text-white/70">
-                                                        {product.description}
-                                                    </p>
-                                                    <p className="mb-12 text-base leading-relaxed text-black/70 dark:text-white/70">
-                                                        {product.content}
-                                                    </p>
-                                                    <p className="text-2xl font-medium">
-                                                        Rp{' '}
-                                                        {Number(
-                                                            product.price,
-                                                        ).toLocaleString(
-                                                            'id-ID',
-                                                        )}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                </div>
-                            </div>
-                        </div>
-                    </>
-                )}
 
                 {/* CTA Section */}
                 <section className="border-y border-black/10 px-6 py-20 lg:px-12 dark:border-white/10">

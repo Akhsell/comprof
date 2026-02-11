@@ -124,7 +124,7 @@ export default function ProductDetail() {
                                 </h1>
                                 <div className="flex items-center gap-2">
                                     <Minus className="h-3 w-3 text-black/20 dark:text-white/20" />
-                                    <span className="text-xs font-medium uppercase tracking-wider text-black/60 dark:text-white/60">
+                                    <span className="text-xs font-medium tracking-wider text-black/60 uppercase dark:text-white/60">
                                         Overview
                                     </span>
                                 </div>
@@ -133,7 +133,7 @@ export default function ProductDetail() {
                             {/* Description */}
                             <div className="space-y-6">
                                 <div>
-                                    <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-black/60 dark:text-white/60">
+                                    <h2 className="mb-3 text-xs font-semibold tracking-wider text-black/60 uppercase dark:text-white/60">
                                         Description
                                     </h2>
                                     <p className="text-base leading-relaxed font-light text-black/70 dark:text-white/70">
@@ -144,7 +144,7 @@ export default function ProductDetail() {
                                 {/* Details */}
                                 {product.content && (
                                     <div className="border-t border-black/10 pt-6 dark:border-white/10">
-                                        <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-black/60 dark:text-white/60">
+                                        <h2 className="mb-3 text-xs font-semibold tracking-wider text-black/60 uppercase dark:text-white/60">
                                             Product Details
                                         </h2>
                                         <p className="text-base leading-relaxed font-light text-black/70 dark:text-white/70">
@@ -155,7 +155,7 @@ export default function ProductDetail() {
 
                                 {/* Benefits List */}
                                 <div className="border-t border-black/10 pt-6 dark:border-white/10">
-                                    <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-black/60 dark:text-white/60">
+                                    <h2 className="mb-3 text-xs font-semibold tracking-wider text-black/60 uppercase dark:text-white/60">
                                         What's Included
                                     </h2>
                                     <div className="space-y-2">
@@ -172,10 +172,6 @@ export default function ProductDetail() {
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-3 text-sm">
-                                            <Check className="h-4 w-4 text-black/40 dark:text-white/40" />
-                                            <span className="font-light text-black/70 dark:text-white/70">
-                                                Money-back guarantee
-                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -204,18 +200,12 @@ export default function ProductDetail() {
                                                 </div>
                                                 <div className="text-3xl font-semibold tracking-tight">
                                                     Rp{' '}
-                                                    {Number(product.price).toLocaleString('id-ID')}
+                                                    {Number(
+                                                        product.price,
+                                                    ).toLocaleString('id-ID')}
                                                 </div>
                                             </div>
-                                            <div className="text-right">
-                                                <div className="text-xs font-medium text-black/60 dark:text-white/60">
-                                                    Status
-                                                </div>
-                                                <div className="mt-1 inline-flex items-center gap-1.5 rounded-full bg-black/5 px-3 py-1 text-xs font-medium dark:bg-white/5">
-                                                    <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
-                                                    Available
-                                                </div>
-                                            </div>
+                                            <div className="text-right"></div>
                                         </div>
 
                                         {/* CTA Button */}
@@ -229,8 +219,11 @@ export default function ProductDetail() {
 
                                         {/* Additional Info */}
                                         <div className="mt-5 rounded-xl border border-black/10 p-4 dark:border-white/10">
-                                            <p className="text-sm font-light leading-relaxed text-black/70 dark:text-white/70">
-                                                Need help choosing? Our team is ready to assist you in finding the perfect solution for your needs.
+                                            <p className="text-sm leading-relaxed font-light text-black/70 dark:text-white/70">
+                                                Need help choosing? Our team is
+                                                ready to assist you in finding
+                                                the perfect solution for your
+                                                needs.
                                             </p>
                                         </div>
                                     </div>
@@ -249,7 +242,8 @@ export default function ProductDetail() {
                                     Related Products
                                 </h2>
                                 <p className="max-w-xl text-sm font-light text-black/70 dark:text-white/70">
-                                    Discover more products that might interest you
+                                    Discover more products that might interest
+                                    you
                                 </p>
                             </div>
 
@@ -258,8 +252,8 @@ export default function ProductDetail() {
                                     .slice(0, 3)
                                     .map((relatedProduct) => (
                                         <Link
-                                            key={relatedProduct.id}
-                                            href={`/product/detail-product/${relatedProduct.id}`}
+                                            key={relatedProduct.slug}
+                                            href={`/product/detail-product/${relatedProduct.slug}`}
                                             className="group rounded-xl border border-black/5 p-5 transition-all hover:-translate-y-1 hover:border-black/10 hover:bg-black/[0.02] dark:border-white/5 dark:hover:border-white/10 dark:hover:bg-white/[0.02]"
                                         >
                                             <div className="mb-4 aspect-[4/3] overflow-hidden rounded-lg bg-black/5 dark:bg-white/5">

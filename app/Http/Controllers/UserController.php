@@ -56,22 +56,26 @@ class UserController extends Controller
         ]);
     }
 
-    public function checkout(Product $checkout) {
-        return Inertia::render('checkout', [
-            'product' => $checkout,
+    public function detailEvent(Event $event) {
+        return Inertia::render('detailEvent', [
+            'event' => $event,
         ]);
     }
 
-    
-    
+    public function checkout(Product $product) {
+        return Inertia::render('checkout', [
+            'product' => $product,
+        ]);
+    }
+
 
     public function index()
     {
         return Inertia::render('welcome', [
-            'articles' => Article::latest()->take(3)->get(),
-            'events' => Event::latest()->take(3)->get(),
-            'galleries' => Gallery::latest()->take(3)->get(),
-            'products' => Product::latest()->take(3)->get(),
+            'articles' => Article::latest()->get(),
+            'events' => Event::latest()->get(),
+            'galleries' => Gallery::latest()->get(),
+            'products' => Product::latest()->get(),
             'clients' => Client::latest()->get(),
         ]);
     }
