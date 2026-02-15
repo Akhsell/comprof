@@ -9,13 +9,12 @@ import { formatDate } from '@/types/formatDate';
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
-    ArrowUpRight,
     Calendar,
     Mail,
     MapPin,
+    Menu,
     Phone,
     X,
-    Menu,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -86,223 +85,6 @@ export default function Welcome({
                 />
             </Head>
 
-            <style>{`
-        * {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes scaleIn {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        @keyframes slideInFromRight {
-          from { 
-            opacity: 0;
-            transform: translateX(20px);
-          }
-          to { 
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .animate-fade-in-up {
-          animation: fadeInUp 0.8s ease-out forwards;
-        }
-
-        .animate-scale-in {
-          animation: scaleIn 0.6s ease-out forwards;
-        }
-
-        .animate-spin-slow {
-          animation: spin 0.8s linear infinite;
-        }
-
-        .animate-slide-in {
-          animation: slideInFromRight 0.4s ease-out forwards;
-        }
-
-        .delay-100 { animation-delay: 0.1s; }
-        .delay-200 { animation-delay: 0.2s; }
-        .delay-300 { animation-delay: 0.3s; }
-        .delay-400 { animation-delay: 0.4s; }
-        .delay-500 { animation-delay: 0.5s; }
-        .delay-600 { animation-delay: 0.6s; }
-        .delay-700 { animation-delay: 0.7s; }
-
-        .image-reveal {
-          overflow: hidden;
-          position: relative;
-        }
-
-        .image-reveal::before {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: #000;
-          transform: translateX(-100%);
-          transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
-          z-index: 1;
-        }
-
-        .image-reveal.reveal::before {
-          transform: translateX(100%);
-        }
-
-        .image-reveal img {
-          transform: scale(1);
-          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .image-reveal:hover img {
-          transform: scale(1.08);
-        }
-
-        /* Smooth hover animation for product images */
-        .product-card .image-reveal img {
-          transform: scale(1);
-          transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .product-card:hover .image-reveal img {
-          transform: scale(1.1);
-        }
-
-        /* Smooth hover animation for article images */
-        .article-card .image-reveal img {
-          transform: scale(1);
-          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .article-card:hover .image-reveal img {
-          transform: scale(1.05);
-        }
-
-        /* Smooth hover animation for gallery images */
-        .gallery-item {
-          overflow: hidden;
-          position: relative;
-        }
-
-        .gallery-item img {
-          transform: scale(1);
-          transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .gallery-item:hover img {
-          transform: scale(1.12);
-        }
-
-        /* Smooth hover animation for client logos */
-        .client-logo-wrapper {
-          overflow: hidden;
-        }
-
-        .client-logo-wrapper img {
-          transform: scale(1);
-          transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .client-logo-wrapper:hover img {
-          transform: scale(1.1);
-        }
-
-        .text-balance {
-          text-wrap: balance;
-        }
-
-        .hover-lift {
-          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .hover-lift:hover {
-          transform: translateY(-4px);
-        }
-
-        .link-underline {
-          position: relative;
-          display: inline-block;
-        }
-
-        .link-underline::after {
-          content: '';
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          width: 0;
-          height: 1px;
-          background: currentColor;
-          transition: width 0.3s ease;
-        }
-
-        .link-underline:hover::after {
-          width: 100%;
-        }
-
-        .marquee {
-          overflow: hidden;
-          white-space: nowrap;
-        }
-
-        .marquee-content {
-          display: inline-block;
-          animation: marquee 30s linear infinite;
-        }
-
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-
-        .grid-lines {
-          background-image: 
-            linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
-          background-size: 80px 80px;
-        }
-
-        .dark .grid-lines {
-          background-image: 
-            linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
-        }
-
-        .contact-info-card {
-          border-radius: 16px;
-          border: 1px solid rgba(0,0,0,0.05);
-          padding: 24px;
-          transition: all 0.2s ease;
-        }
-
-        .contact-info-card:hover {
-          border-color: rgba(0,0,0,0.1);
-          background: rgba(0,0,0,0.02);
-          transform: translateY(-2px);
-        }
-
-        .dark .contact-info-card {
-          border-color: rgba(255,255,255,0.05);
-        }
-
-        .dark .contact-info-card:hover {
-          border-color: rgba(255,255,255,0.1);
-          background: rgba(255,255,255,0.02);
-        }
-      `}</style>
-
             <div className="min-h-screen bg-white text-black dark:bg-black dark:text-white">
                 {/* Navigation */}
                 <header
@@ -332,7 +114,10 @@ export default function Welcome({
                                         onClick={(e) => {
                                             if (item.href.startsWith('#')) {
                                                 e.preventDefault();
-                                                const element = document.querySelector(item.href);
+                                                const element =
+                                                    document.querySelector(
+                                                        item.href,
+                                                    );
                                                 element?.scrollIntoView({
                                                     behavior: 'smooth',
                                                     block: 'start',
@@ -341,7 +126,9 @@ export default function Welcome({
                                         }}
                                         className="group relative px-3 py-2 text-sm font-medium transition-all duration-300 hover:text-black dark:hover:text-white"
                                     >
-                                        <span className="relative z-10">{item.label}</span>
+                                        <span className="relative z-10">
+                                            {item.label}
+                                        </span>
                                         <span className="absolute inset-0 rounded-lg bg-black/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:bg-white/5"></span>
                                     </a>
                                 ))}
@@ -374,7 +161,9 @@ export default function Welcome({
                                     aria-label="Open menu"
                                 >
                                     <Menu className="h-4 w-4 transition-transform group-hover:scale-110" />
-                                    <span className="hidden sm:inline">Menu</span>
+                                    <span className="hidden sm:inline">
+                                        Menu
+                                    </span>
                                 </button>
                             </div>
                         </nav>
@@ -424,15 +213,22 @@ export default function Welcome({
                                         key={item.href}
                                         href={item.href}
                                         className={`group flex items-center justify-between rounded-xl px-5 py-4 transition-all hover:bg-black/5 active:scale-[0.98] dark:hover:bg-white/5 ${
-                                            isMobileMenuOpen ? 'animate-slide-in opacity-0' : ''
+                                            isMobileMenuOpen
+                                                ? 'animate-slide-in opacity-0'
+                                                : ''
                                         }`}
-                                        style={{ animationDelay: `${index * 50}ms` }}
+                                        style={{
+                                            animationDelay: `${index * 50}ms`,
+                                        }}
                                         onClick={(e) => {
                                             if (item.href.startsWith('#')) {
                                                 e.preventDefault();
                                                 setIsMobileMenuOpen(false);
                                                 setTimeout(() => {
-                                                    const element = document.querySelector(item.href);
+                                                    const element =
+                                                        document.querySelector(
+                                                            item.href,
+                                                        );
                                                     element?.scrollIntoView({
                                                         behavior: 'smooth',
                                                         block: 'start',
@@ -455,10 +251,22 @@ export default function Welcome({
                         {/* Footer */}
                         <div className="border-t border-black/10 px-6 py-5 dark:border-white/10">
                             <div className="flex items-center justify-between text-xs text-black/50 dark:text-white/50">
-                                <span>© {new Date().getFullYear()} VerveLab</span>
+                                <span>
+                                    © {new Date().getFullYear()} VerveLab
+                                </span>
                                 <div className="flex gap-4">
-                                    <a href="#" className="hover:text-black dark:hover:text-white">Privacy</a>
-                                    <a href="#" className="hover:text-black dark:hover:text-white">Terms</a>
+                                    <a
+                                        href="#"
+                                        className="hover:text-black dark:hover:text-white"
+                                    >
+                                        Privacy
+                                    </a>
+                                    <a
+                                        href="#"
+                                        className="hover:text-black dark:hover:text-white"
+                                    >
+                                        Terms
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -740,7 +548,7 @@ export default function Welcome({
                                 <Link
                                     key={index}
                                     href="/event/view-event"
-                                    className="group relative overflow-hidden rounded-2xl border border-black/10 bg-white p-8 transition-all hover:border-black/20 hover:-translate-y-1 dark:border-white/10 dark:bg-black dark:hover:border-white/20"
+                                    className="group relative overflow-hidden rounded-2xl border border-black/10 bg-white p-8 transition-all hover:-translate-y-1 hover:border-black/20 dark:border-white/10 dark:bg-black dark:hover:border-white/20"
                                 >
                                     <div className="relative z-10">
                                         <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1.5 text-xs dark:border-white/10">
@@ -970,6 +778,223 @@ export default function Welcome({
                     </div>
                 </footer>
             </div>
+
+            <style>{`
+        * {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        @keyframes fadeInUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes scaleIn {
+          from { opacity: 0; transform: scale(0.95); }
+          to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideInFromRight {
+          from { 
+            opacity: 0;
+            transform: translateX(20px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .animate-scale-in {
+          animation: scaleIn 0.6s ease-out forwards;
+        }
+
+        .animate-spin-slow {
+          animation: spin 0.8s linear infinite;
+        }
+
+        .animate-slide-in {
+          animation: slideInFromRight 0.4s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-700 { animation-delay: 0.7s; }
+
+        .image-reveal {
+          overflow: hidden;
+          position: relative;
+        }
+
+        .image-reveal::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: #000;
+          transform: translateX(-100%);
+          transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
+          z-index: 1;
+        }
+
+        .image-reveal.reveal::before {
+          transform: translateX(100%);
+        }
+
+        .image-reveal img {
+          transform: scale(1);
+          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .image-reveal:hover img {
+          transform: scale(1.08);
+        }
+
+        /* Smooth hover animation for product images */
+        .product-card .image-reveal img {
+          transform: scale(1);
+          transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .product-card:hover .image-reveal img {
+          transform: scale(1.1);
+        }
+
+        /* Smooth hover animation for article images */
+        .article-card .image-reveal img {
+          transform: scale(1);
+          transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .article-card:hover .image-reveal img {
+          transform: scale(1.05);
+        }
+
+        /* Smooth hover animation for gallery images */
+        .gallery-item {
+          overflow: hidden;
+          position: relative;
+        }
+
+        .gallery-item img {
+          transform: scale(1);
+          transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gallery-item:hover img {
+          transform: scale(1.12);
+        }
+
+        /* Smooth hover animation for client logos */
+        .client-logo-wrapper {
+          overflow: hidden;
+        }
+
+        .client-logo-wrapper img {
+          transform: scale(1);
+          transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .client-logo-wrapper:hover img {
+          transform: scale(1.1);
+        }
+
+        .text-balance {
+          text-wrap: balance;
+        }
+
+        .hover-lift {
+          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hover-lift:hover {
+          transform: translateY(-4px);
+        }
+
+        .link-underline {
+          position: relative;
+          display: inline-block;
+        }
+
+        .link-underline::after {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          width: 0;
+          height: 1px;
+          background: currentColor;
+          transition: width 0.3s ease;
+        }
+
+        .link-underline:hover::after {
+          width: 100%;
+        }
+
+        .marquee {
+          overflow: hidden;
+          white-space: nowrap;
+        }
+
+        .marquee-content {
+          display: inline-block;
+          animation: marquee 30s linear infinite;
+        }
+
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+
+        .grid-lines {
+          background-image: 
+            linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+          background-size: 80px 80px;
+        }
+
+        .dark .grid-lines {
+          background-image: 
+            linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+        }
+
+        .contact-info-card {
+          border-radius: 16px;
+          border: 1px solid rgba(0,0,0,0.05);
+          padding: 24px;
+          transition: all 0.2s ease;
+        }
+
+        .contact-info-card:hover {
+          border-color: rgba(0,0,0,0.1);
+          background: rgba(0,0,0,0.02);
+          transform: translateY(-2px);
+        }
+
+        .dark .contact-info-card {
+          border-color: rgba(255,255,255,0.05);
+        }
+
+        .dark .contact-info-card:hover {
+          border-color: rgba(255,255,255,0.1);
+          background: rgba(255,255,255,0.02);
+        }
+      `}</style>
         </>
     );
 }
